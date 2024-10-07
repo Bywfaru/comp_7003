@@ -256,5 +256,5 @@ if len(sys.argv) == 4:
     capture_packets(sys.argv[1], sys.argv[2], int(sys.argv[3]))
 else:
     print(f"Invalid arguments: {sys.argv[1:]}")
-    print(f"Please try again with the following format: {sys.argv[0]} <interface> <bpf_capture_filter> <packet_count>")
+    print(f"Please try again with the following format: {sys.argv[0]} <interface> <bpf> <packet_count>")
     print(f"Example: {sys.argv[0]} eth0 \"ip and tcp\" 5")
