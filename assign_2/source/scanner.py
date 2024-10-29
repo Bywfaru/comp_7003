@@ -241,19 +241,33 @@ def packet_callback(packet):
 
 # Capture packets on a specified interface using a custom filter
 def capture_packets(interface, capture_filter, packet_count):
-    print(f"Starting {packet_count} packet captures on {interface} with filter: {capture_filter}\n")
 
-    sniff(iface=interface, filter=capture_filter, prn=packet_callback, count=packet_count)
+    try:
+        print(f"Starting {packet_count} packet captures on {interface} with filter: {capture_filter}\n")
 
-    num_packets_captured = next(packet_count_generator) - 1
+        sniff(iface=interface, filter=capture_filter, prn=packet_callback, count=packet_count)
 
-    if num_packets_captured >= 5:
-        print(f"Finished capturing {packet_count} packets on {interface} with filter: {capture_filter}")
-    else:
-        print(f"Failed to capture {packet_count} packets. Captured {num_packets_captured}/{packet_count}")
+        num_packets_captured = next(packet_count_generator) - 1
 
-if len(sys.argv) == 4:
+        if num_packets_captured >= 5:
+            print(f"Finished capturing {packet_count} packets on {interface} with filter: {capture_filter}")
+        else:
+            print(f"Failed to capture {packet_count} packets. Captured {num_packets_captured}/{packet_count}")
+    except Exception as ex:
+        print(f"An error occurred: {ex}")
+
+num_args = len(sys.argv)
+
+if num_args == 4:
     capture_packets(sys.argv[1], sys.argv[2], int(sys.argv[3]))
+elif num_args < 4:
+    print(f"Too few arguments: {sys.argv[1:]}")
+    print(f"Please try again with the following format: {sys.argv[0]} <interface> <bpf> <packet_count>")
+    print(f"Example: {sys.argv[0]} eth0 \"ip and tcp\" 5")
+elif num_args > 4:
+    print(f"Too many arguments: {sys.argv[1:]}")
+    print(f"Please try again with the following format: {sys.argv[0]} <interface> <bpf> <packet_count>")
+    print(f"Example: {sys.argv[0]} eth0 \"ip and tcp\" 5")
 else:
     print(f"Invalid arguments: {sys.argv[1:]}")
     print(f"Please try again with the following format: {sys.argv[0]} <interface> <bpf> <packet_count>")
